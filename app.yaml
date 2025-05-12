@@ -1,0 +1,41 @@
+# app.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metric-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metric-app
+  template:
+    metadata:
+      labels:
+        app: metric-app
+    spec:
+      containers:
+        - name: metric-app
+          image: panthuya/metric-app:v2
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "150m"
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metric-app-service
+spec:
+  selector:
+    app: metric-app
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30801
+  type: NodePort
+      

@@ -1,0 +1,19 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: metric-app-scaledobject
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: metric-app
+  minReplicaCount: 1
+  maxReplicaCount: 5
+  pollingInterval: 2
+  cooldownPeriod: 5
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus-server.monitoring.svc.cluster.local
+        metricName: demo_http_requests_total
+        query: rate(demo_http_requests_total{method="GET", endpoint="/"}[1m])
+        threshold: "1"
