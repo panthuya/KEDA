@@ -8,12 +8,10 @@ spec:
     name: metric-app
   minReplicaCount: 1
   maxReplicaCount: 5
-  pollingInterval: 2
-  cooldownPeriod: 5
   triggers:
     - type: prometheus
       metadata:
-        serverAddress: http://prometheus-server.monitoring.svc.cluster.local
+        serverAddress: http://prometheus-server.monitoring.svc.cluster.local:80
         metricName: demo_http_requests_total
-        query: rate(demo_http_requests_total{method="GET", endpoint="/"}[1m])
-        threshold: "1"
+        query: rate(demo_http_requests_total{method="GET", endpoint="/", job="metric-app"}[2m])
+        threshold: "0.05"
