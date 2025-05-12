@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: metric-app
-          image: panthuya/metric-app:v2
+          image: panthuya/metric-app:v1
           resources:
             requests:
               memory: "64Mi"
