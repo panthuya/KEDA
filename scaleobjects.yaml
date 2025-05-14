@@ -2,12 +2,17 @@ apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
   name: metric-app-scaledobject
+  annotations:
+    scaledobject.keda.sh/transfer-hpa-ownership: "true"
+    validations.keda.sh/hpa-ownership: "true"
   namespace: default
 spec:
   scaleTargetRef:
     name: metric-app
   minReplicaCount: 1
   maxReplicaCount: 5
+  pollingInterval: 5
+  cooldownPeriod: 60
   triggers:
     - type: prometheus
       metadata:
