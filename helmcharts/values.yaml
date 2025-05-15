@@ -33,7 +33,7 @@ readinessProbe:
 
 service:
   type: ClusterIP
-  prot: 80
+  port: 80
 
 # KEDA ScaleObject
 keda:
