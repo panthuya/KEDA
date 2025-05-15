@@ -22,8 +22,8 @@ spec:
             limits:
               memory: {{ .Values.resources.limits.memory }}
               cpu: {{ .Values.resources.limits.cpu }}
-          ports: {{ .Values.container.port }}
-            - containerPort: 
+          ports: 
+            - containerPort: {{ .Values.container.port }}
           readinessProbe:
             httpGet:
               path: {{ .Values.readinessProbe.httpGet.path }}
