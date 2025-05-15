@@ -1,0 +1,49 @@
+replicaCount: 1
+
+image:
+  repository: panthuya/metric-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+labels:
+  app: metric-app
+
+container:
+  name: metric-app
+  port: 80
+
+resources:
+  limits:
+    memory: "128Mi"
+    cpu: "200m"
+  # Requests section can be added if needed
+  # requests:
+  #   memory: "64Mi"
+  #   cpu: "100m"
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+service:
+  type: ClusterIP
+  prot: 80
+
+# KEDA ScaleObject
+keda:
+  minReplicaCount: 0
+  maxReplicaCount: 5
+  pollingInterval: 5
+  cooldownPeriod: 60
+  prometheus:
+    serverAddress: http://prometheus-server.monitoring.svc.cluster.local:80
+    metricName: demo_http_requests_total
+    query: rate(demo_http_requests_total{method="GET", endpoint="/", job="metric-app"}[5m])
+    threshold: "5"
+    activationThreshold: "1"
