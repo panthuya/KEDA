@@ -1,22 +1,22 @@
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: metric-app-scaledobject
-  namespace: default
+  name: {{ .Release.Name }}-scaledobject
+  namespace: {{ .Release.Namespace }}
   annotations:
     scaledobject.keda.sh/transfer-hpa-ownership: "true"
 spec:
   scaleTargetRef:
-    name: metric-app
-  minReplicaCount: 0
-  maxReplicaCount: 5
-  pollingInterval: 5
-  cooldownPeriod: 60
+    name: {{ .Release.Name }}
+  minReplicaCount: {{ .Values.keda.minReplicaCount }}
+  maxReplicaCount: {{ .Values.keda.maxReplicaCount }}
+  pollingInterval: {{ .Values.keda.pollingInterval }}
+  cooldownPeriod: {{ .Values.keda.cooldownPeriod }}
   triggers:
     - type: prometheus
       metadata:
-        serverAddress: http://prometheus-server.monitoring.svc.cluster.local:80
-        metricName: demo_http_requests_total
-        query: rate(demo_http_requests_total{method="GET", endpoint="/", job="metric-app"}[2m])
-        threshold: "0.5"
-        activationThreshold: "0.01"
+        serverAddress: {{ .Values.keda.prometheus.serverAddress | quote }}
+        metricName: {{ .Values.keda.prometheus.metricName }}
+        query: {{ .Values.keda.prometheus.query | quote }}
+        threshold: {{ .Values.keda.prometheus.threshold | quote }}
+        activationThreshold: {{ .Values.keda.prometheus.activationThreshold | quote }}
